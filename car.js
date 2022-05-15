@@ -6,8 +6,8 @@ class Car {
     this.height = height;
 
     this.speed = 0;
-    this.acceralation = 0.2;
-    this.maxSpeed = 3;
+    this.acceralation = 0.5;
+    this.maxSpeed = 8;
     this.friction = 0.05;
     this.angle = 0;
 
@@ -15,6 +15,10 @@ class Car {
   }
 
   update() {
+    this.#move();
+  }
+
+  #move() {
     if (this.controls.forward) {
       this.speed += this.acceralation;
     }
