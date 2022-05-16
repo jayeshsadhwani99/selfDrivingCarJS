@@ -13,10 +13,7 @@ class Sensor {
     this.#castRays();
     this.readings = [];
     for (let i = 0; i < this.rays.length; i++) {
-      if (roadBorders)
-        this.readings.push(
-          this.#getReading(this.rays[i], roadBorders, traffic)
-        );
+      this.readings.push(this.#getReading(this.rays[i], roadBorders, traffic));
     }
   }
 
