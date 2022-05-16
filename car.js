@@ -10,17 +10,13 @@ class Car {
     this.maxSpeed = maxSpeed;
     this.friction = 0.05;
     this.angle = 0;
-
     this.damaged = false;
 
-    this.useBrain = controlType === "AI";
+    this.useBrain = controlType == "AI";
 
-    this.polygon = this.#createPolygon();
-
-    if (controlType !== "DUMMY") {
+    if (controlType != "DUMMY") {
       this.sensor = new Sensor(this);
       this.brain = new NeuralNetwork([this.sensor.rayCount, 6, 4]);
-      this.sensor.update();
     }
     this.controls = new Controls(controlType);
   }
@@ -29,7 +25,7 @@ class Car {
     if (!this.damaged) {
       this.#move();
       this.polygon = this.#createPolygon();
-      this.damaged = this.#assesDamage(roadBorders, traffic);
+      this.damaged = this.#assessDamage(roadBorders, traffic);
     }
     if (this.sensor) {
       this.sensor.update(roadBorders, traffic);
@@ -47,13 +43,12 @@ class Car {
     }
   }
 
-  #assesDamage(roadBorders, traffic) {
+  #assessDamage(roadBorders, traffic) {
     for (let i = 0; i < roadBorders.length; i++) {
       if (polygonIntersect(this.polygon, roadBorders[i])) {
         return true;
       }
     }
-
     for (let i = 0; i < traffic.length; i++) {
       if (polygonIntersect(this.polygon, traffic[i].polygon)) {
         return true;
@@ -99,6 +94,7 @@ class Car {
     if (this.speed < -this.maxSpeed / 2) {
       this.speed = -this.maxSpeed / 2;
     }
+
     if (this.speed > 0) {
       this.speed -= this.friction;
     }
@@ -136,6 +132,8 @@ class Car {
     }
     ctx.fill();
 
-    if (drawSensor && this.sensor) this.sensor.draw(ctx);
+    if (this.sensor && drawSensor) {
+      this.sensor.draw(ctx);
+    }
   }
 }

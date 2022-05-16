@@ -3,7 +3,7 @@ class Sensor {
     this.car = car;
     this.rayCount = 5;
     this.rayLength = 150;
-    this.raySpread = Math.PI / 4;
+    this.raySpread = Math.PI / 2;
 
     this.rays = [];
     this.readings = [];
@@ -12,17 +12,15 @@ class Sensor {
   update(roadBorders, traffic) {
     this.#castRays();
     this.readings = [];
-
-    if (roadBorders) {
-      for (let i = 0; i < this.rays.length; i++) {
+    for (let i = 0; i < this.rays.length; i++) {
+      if (roadBorders)
         this.readings.push(
-          this.#getReadings(this.rays[i], roadBorders, traffic)
+          this.#getReading(this.rays[i], roadBorders, traffic)
         );
-      }
     }
   }
 
-  #getReadings(ray, roadBorders, traffic) {
+  #getReading(ray, roadBorders, traffic) {
     let touches = [];
 
     for (let i = 0; i < roadBorders.length; i++) {
@@ -32,20 +30,19 @@ class Sensor {
         roadBorders[i][0],
         roadBorders[i][1]
       );
-
       if (touch) {
         touches.push(touch);
       }
     }
 
     for (let i = 0; i < traffic.length; i++) {
-      const polygon = traffic[i].polygon;
-      for (let j = 0; j < polygon.length; j++) {
+      const poly = traffic[i].polygon;
+      for (let j = 0; j < poly.length; j++) {
         const value = getIntersection(
           ray[0],
           ray[1],
-          polygon[j],
-          polygon[(j + 1) % polygon.length]
+          poly[j],
+          poly[(j + 1) % poly.length]
         );
         if (value) {
           touches.push(value);
@@ -77,7 +74,6 @@ class Sensor {
         x: this.car.x - Math.sin(rayAngle) * this.rayLength,
         y: this.car.y - Math.cos(rayAngle) * this.rayLength,
       };
-
       this.rays.push([start, end]);
     }
   }
@@ -96,7 +92,6 @@ class Sensor {
       ctx.lineTo(end.x, end.y);
       ctx.stroke();
 
-      // To see where line would have continued
       ctx.beginPath();
       ctx.lineWidth = 2;
       ctx.strokeStyle = "black";
